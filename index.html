@@ -10163,41 +10163,10 @@ VERSI: PROFESSIONAL SAFE PREVIEW + FONT SIZE SLIDER
                                                     <label for="form-field-kehadiran-0"></label></span></div>
                                         </div>
                                         <div
-                                            class="elementor-field-type-select elementor-field-group elementor-column elementor-field-group-jumlah elementor-col-100 elementor-field-required">
+                                            class="elementor-field-type-number elementor-field-group elementor-column elementor-field-group-jumlah elementor-col-100 elementor-field-required" style="margin-bottom: 15px;">
                                             <label for="form-field-jumlah" class="elementor-field-label">
                                                 Jumlah Tamu </label>
-                                            <div class="elementor-field elementor-select-wrapper remove-before ">
-                                                <div class="select-caret-down-wrapper">
-                                                    <i aria-hidden="true" class="eicon-caret-down"></i>
-                                                </div>
-                                                <select name="form_fields[jumlah]" id="form-field-jumlah"
-                                                    class="elementor-field-textual elementor-size-sm"
-                                                    required="required">
-                                                    <option value=""></option>
-                                                </select>
-                                            </div>
-                                        </div>
-                                        <div
-                                            class="elementor-field-type-select elementor-field-group elementor-column elementor-field-group-acara elementor-col-100">
-                                            <label for="form-field-acara" class="elementor-field-label">
-                                                Pilih Acara </label>
-                                            <div class="elementor-field elementor-select-wrapper remove-before ">
-                                                <div class="select-caret-down-wrapper">
-                                                    <i aria-hidden="true" class="eicon-caret-down"></i>
-                                                </div>
-                                                <select name="form_fields[acara]" id="form-field-acara"
-                                                    class="elementor-field-textual elementor-size-sm">
-                                                    <option value=""></option>
-                                                </select>
-                                            </div>
-                                        </div>
-                                        <div
-                                            class="elementor-field-type-text elementor-field-group elementor-column elementor-field-group-custom1 elementor-col-100">
-                                            <label for="form-field-custom1" class="elementor-field-label">
-                                                Custom </label>
-                                            <input size="1" type="text" name="form_fields[custom1]"
-                                                id="form-field-custom1"
-                                                class="elementor-field elementor-size-sm  elementor-field-textual">
+                                            <input type="number" min="1" max="50" value="1" name="form_fields[jumlah]" id="form-field-jumlah" class="elementor-field elementor-size-sm elementor-field-textual" placeholder="1" required="required" style="display: block !important; visibility: visible !important; opacity: 1 !important; width: 100%;">
                                         </div>
                                         <div
                                             class="elementor-field-type-textarea elementor-field-group elementor-column elementor-field-group-ucapan elementor-col-100">
@@ -10396,28 +10365,9 @@ VERSI: PROFESSIONAL SAFE PREVIEW + FONT SIZE SLIDER
                                                             });
                                                         }
                                                         wrapperKehadiran.classList.add('custom-radio-box-horizontal');
-                                                    }
-
-                                                    if (inputJumlah) {
-                                                        inputJumlah.style.display = 'none';
-                                                        inputJumlah.removeAttribute('required');
-
-                                                        const disableAttr = (sisaKuota <= 0) ? 'disabled' : '';
-                                                        let selectHtml = `<div class="elementor-select-wrapper"><select id="custom-jumlah-dropdown" class="elementor-field-textual elementor-size-sm elementor-field" ${disableAttr}>`;
-
-                                                        if (sisaKuota > 0) {
-                                                            for (let i = 1; i <= sisaKuota; i++) selectHtml += `<option value="${i}">${i} </option>`;
-                                                        } else {
-                                                            selectHtml += `<option value="0">Quota Full</option>`;
-                                                        }
-                                                        selectHtml += `</select></div>`;
-
-                                                        inputJumlah.insertAdjacentHTML('afterend', selectHtml);
-
-                                                        const dropdownJumlah = formContainer.querySelector('#custom-jumlah-dropdown');
-                                                        dropdownJumlah.addEventListener('change', function () { inputJumlah.value = this.value; });
-                                                        inputJumlah.value = dropdownJumlah.value;
-                                                    }
+                                                    } if (inputJumlah) {
+                                                         inputJumlah.style.display = 'block';
+                                                     }    }
 
                                                     if (fieldAcara && dataAcaraDB.trim() !== '') {
                                                         fieldAcara.style.display = 'none';
@@ -10450,7 +10400,7 @@ VERSI: PROFESSIONAL SAFE PREVIEW + FONT SIZE SLIDER
                                                         // MODE PUBLIK: Cuma Nama & Ucapan
                                                         if (fieldNama) { fieldNama.style.display = 'block'; fieldNama.querySelectorAll('input, textarea').forEach(i => i.setAttribute('required', 'required')); }
 
-                                                        [wrapperKehadiran, wrapperJumlah, fieldAcara, fieldWA, fieldCustom].forEach(w => {
+                                                        [wrapperKehadiran, fieldAcara, fieldWA, fieldCustom].forEach(w => {
                                                             if (w) {
                                                                 w.style.display = 'none';
                                                                 w.querySelectorAll('input, select, textarea').forEach(i => i.removeAttribute('required'));
