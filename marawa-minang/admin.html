@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kirim Undangan WA - Admin</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+        }
+
+        body {
+            background-color: #f3f4f6;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .card {
+            background: #ffffff;
+            width: 100%;
+            max-width: 440px;
+            border-radius: 20px;
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.05), 0 8px 10px -6px rgba(0, 0, 0, 0.01);
+            padding: 36px 32px;
+        }
+
+        .card-title {
+            font-size: 26px;
+            font-weight: 700;
+            color: #1f2937;
+            text-align: center;
+            margin-bottom: 28px;
+            letter-spacing: -0.5px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-label {
+            display: block;
+            font-size: 14px;
+            font-weight: 600;
+            color: #4b5563;
+            margin-bottom: 8px;
+        }
+
+        .form-input {
+            width: 100%;
+            padding: 13px 16px;
+            font-size: 15px;
+            border: 1px solid #d1d5db;
+            border-radius: 8px;
+            outline: none;
+            color: #1f2937;
+            transition: border-color 0.2s, box-shadow 0.2s;
+        }
+
+        .form-input::placeholder {
+            color: #9ca3af;
+        }
+
+        .form-input:focus {
+            border-color: #22c55e;
+            box-shadow: 0 0 0 3px rgba(34, 197, 94, 0.15);
+        }
+
+        .form-input.active-border {
+            border: 1.5px solid #22c55e;
+        }
+
+        .btn-submit {
+            width: 100%;
+            background-color: #22c55e;
+            color: #ffffff;
+            font-size: 16px;
+            font-weight: 700;
+            padding: 14px 20px;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            margin-top: 24px;
+            transition: background-color 0.2s, transform 0.1s;
+        }
+
+        .btn-submit:hover {
+            background-color: #16a34a;
+        }
+
+        .btn-submit:active {
+            transform: scale(0.98);
+        }
+
+        .footer-note {
+            font-size: 13px;
+            color: #6b7280;
+            text-align: center;
+            margin-top: 20px;
+            line-height: 1.4;
+        }
+
+        .settings-toggle {
+            display: block;
+            text-align: center;
+            margin-top: 16px;
+            font-size: 12px;
+            color: #9ca3af;
+            cursor: pointer;
+            text-decoration: underline;
+        }
+
+        .advanced-settings {
+            display: none;
+            margin-top: 16px;
+            padding-top: 16px;
+            border-top: 1px dashed #e5e7eb;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="card">
+        <h1 class="card-title">Kirim Undangan WA</h1>
+
+        <form id="waForm" onsubmit="sendWhatsApp(event)">
+            <div class="form-group">
+                <label class="form-label" for="namaTamu">Nama Tamu</label>
+                <input type="text" id="namaTamu" class="form-input" placeholder="Contoh: Budi Santoso" required autocomplete="off">
+            </div>
+
+            <div class="form-group">
+                <label class="form-label" for="nomorWA">Nomor WhatsApp</label>
+                <input type="tel" id="nomorWA" class="form-input active-border" placeholder="Contoh: 6281234567890" required autocomplete="off">
+            </div>
+
+            <button type="submit" class="btn-submit">
+                Kirim via WhatsApp
+            </button>
+        </form>
+
+        <p class="footer-note">Link otomatis dibuat menggunakan domain GitHub Pages Anda.</p>
+
+        <span class="settings-toggle" onclick="toggleSettings()">Pengaturan Domain (Opsional)</span>
+
+        <div class="advanced-settings" id="advancedSettings">
+            <div class="form-group">
+                <label class="form-label" for="customDomain">Custom Base URL</label>
+                <input type="text" id="customDomain" class="form-input" placeholder="https://domainanda.com/">
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Auto detect base URL for index.html
+        function getInvitationBaseUrl() {
+            const custom = document.getElementById('customDomain').value.trim();
+            if (custom) {
+                return custom.endsWith('/') ? custom : custom + '/';
+            }
+            let href = window.location.href.split('?')[0].split('#')[0];
+            if (href.endsWith('admin.html')) {
+                href = href.replace(/admin\.html$/, '');
+            } else if (!href.endsWith('/')) {
+                href = href + '/';
+            }
+            return href;
+        }
+
+        function formatPhoneNumber(phone) {
+            let cleaned = phone.replace(/\D/g, '');
+            if (cleaned.startsWith('0')) {
+                cleaned = '62' + cleaned.substring(1);
+            }
+            return cleaned;
+        }
+
+        function toggleSettings() {
+            const adv = document.getElementById('advancedSettings');
+            adv.style.display = adv.style.display === 'block' ? 'none' : 'block';
+        }
+
+        function sendWhatsApp(e) {
+            e.preventDefault();
+            const nama = document.getElementById('namaTamu').value.trim();
+            const phoneRaw = document.getElementById('nomorWA').value.trim();
+
+            if (!nama || !phoneRaw) {
+                alert('Silakan isi Nama Tamu dan Nomor WhatsApp.');
+                return;
+            }
+
+            const phone = formatPhoneNumber(phoneRaw);
+            const baseUrl = getInvitationBaseUrl();
+            const invitationUrl = baseUrl + '?to=' + encodeURIComponent(nama);
+
+            const messageText = 
+`Assalamualaikum Warahmatullahi Wabarakatuh
+
+Tanpa mengurangi rasa hormat, perkenankan kami mengundang Bapak/Ibu/Saudara/i ${nama} untuk menghadiri acara kami.
+
+Berikut link undangan kami, untuk info lengkap dari acara bisa kunjungi :
+
+${invitationUrl}
+
+Harap dibuka dengan chrome
+
+Merupakan suatu kebahagiaan bagi kami apabila Bapak/Ibu/Saudara/i berkenan untuk hadir dan memberikan doa restu.
+
+Mohon maaf perihal undangan hanya di bagikan melalui pesan ini.
+
+Terima kasih banyak atas perhatiannya.
+
+Wassalamualaikum Warahmatullahi Wabarakatuh
+
+Salam Hormat
+Yusup & Putri`;
+
+            const waUrl = `https://api.whatsapp.com/send/?phone=${phone}&text=${encodeURIComponent(messageText)}&type=phone_number&app_absent=0`;
+
+            window.open(waUrl, '_blank');
+        }
+    </script>
+</body>
+</html>
