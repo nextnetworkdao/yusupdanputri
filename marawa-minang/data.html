@@ -1,0 +1,605 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Data RSVP & Ucapan - Yusup & Putri</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Playfair+Display:ital,wght@0,600;1,400&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <style>
+        :root {
+            --bg-color: #0f172a;
+            --card-bg: #1e293b;
+            --card-border: #334155;
+            --text-primary: #f8fafc;
+            --text-secondary: #94a3b8;
+            --accent-gold: #f1bc6e;
+            --accent-green: #22c55e;
+            --accent-red: #ef4444;
+            --accent-blue: #3b82f6;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Plus Jakarta Sans', sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-primary);
+            min-height: 100vh;
+            padding: 24px 16px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        /* Header */
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 16px;
+            margin-bottom: 28px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid var(--card-border);
+        }
+
+        .header-title h1 {
+            font-family: 'Playfair Display', serif;
+            font-size: 26px;
+            color: var(--accent-gold);
+            margin-bottom: 4px;
+        }
+
+        .header-title p {
+            color: var(--text-secondary);
+            font-size: 14px;
+        }
+
+        .header-actions {
+            display: flex;
+            gap: 10px;
+        }
+
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 10px 16px;
+            border-radius: 8px;
+            font-size: 13px;
+            font-weight: 600;
+            cursor: pointer;
+            border: none;
+            text-decoration: none;
+            transition: transform 0.1s, opacity 0.2s;
+        }
+
+        .btn:active {
+            transform: scale(0.97);
+        }
+
+        .btn-gold {
+            background-color: var(--accent-gold);
+            color: #0f172a;
+        }
+
+        .btn-outline {
+            background-color: transparent;
+            border: 1px solid var(--card-border);
+            color: var(--text-primary);
+        }
+
+        .btn-outline:hover {
+            background-color: var(--card-bg);
+        }
+
+        .btn-danger {
+            background-color: rgba(239, 68, 68, 0.15);
+            color: var(--accent-red);
+            border: 1px solid rgba(239, 68, 68, 0.3);
+        }
+
+        .btn-danger:hover {
+            background-color: rgba(239, 68, 68, 0.25);
+        }
+
+        /* Stats Cards Grid */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 16px;
+            margin-bottom: 28px;
+        }
+
+        .stat-card {
+            background: var(--card-bg);
+            border: 1px solid var(--card-border);
+            border-radius: 14px;
+            padding: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .stat-info span {
+            display: block;
+            color: var(--text-secondary);
+            font-size: 13px;
+            margin-bottom: 6px;
+        }
+
+        .stat-info h2 {
+            font-size: 28px;
+            font-weight: 800;
+        }
+
+        .stat-icon {
+            width: 48px;
+            height: 48px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+        }
+
+        .icon-blue { background: rgba(59, 130, 246, 0.15); color: var(--accent-blue); }
+        .icon-green { background: rgba(34, 197, 94, 0.15); color: var(--accent-green); }
+        .icon-red { background: rgba(239, 68, 68, 0.15); color: var(--accent-red); }
+        .icon-gold { background: rgba(241, 188, 110, 0.15); color: var(--accent-gold); }
+
+        /* Controls / Search Bar */
+        .controls-card {
+            background: var(--card-bg);
+            border: 1px solid var(--card-border);
+            border-radius: 14px;
+            padding: 16px 20px;
+            margin-bottom: 24px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 14px;
+        }
+
+        .search-box {
+            position: relative;
+            flex: 1;
+            min-width: 240px;
+        }
+
+        .search-box i {
+            position: absolute;
+            left: 14px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--text-secondary);
+        }
+
+        .search-input {
+            width: 100%;
+            padding: 10px 14px 10px 40px;
+            background: var(--bg-color);
+            border: 1px solid var(--card-border);
+            border-radius: 8px;
+            color: var(--text-primary);
+            font-size: 14px;
+            outline: none;
+        }
+
+        .search-input:focus {
+            border-color: var(--accent-gold);
+        }
+
+        .filter-group {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+        }
+
+        .select-filter {
+            padding: 10px 14px;
+            background: var(--bg-color);
+            border: 1px solid var(--card-border);
+            border-radius: 8px;
+            color: var(--text-primary);
+            font-size: 14px;
+            outline: none;
+            cursor: pointer;
+        }
+
+        /* Table Card */
+        .table-card {
+            background: var(--card-bg);
+            border: 1px solid var(--card-border);
+            border-radius: 14px;
+            overflow: hidden;
+        }
+
+        .table-responsive {
+            width: 100%;
+            overflow-x: auto;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            text-align: left;
+            font-size: 14px;
+        }
+
+        th {
+            background: #1e293b;
+            color: var(--text-secondary);
+            font-weight: 600;
+            padding: 16px 20px;
+            border-bottom: 1px solid var(--card-border);
+            white-space: nowrap;
+        }
+
+        td {
+            padding: 16px 20px;
+            border-bottom: 1px solid var(--card-border);
+            vertical-align: top;
+        }
+
+        tr:hover {
+            background-color: rgba(255, 255, 255, 0.02);
+        }
+
+        .badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 4px 10px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        .badge-hadir {
+            background: rgba(34, 197, 94, 0.15);
+            color: #4ade80;
+            border: 1px solid rgba(34, 197, 94, 0.3);
+        }
+
+        .badge-absent {
+            background: rgba(239, 68, 68, 0.15);
+            color: #f87171;
+            border: 1px solid rgba(239, 68, 68, 0.3);
+        }
+
+        .badge-public {
+            background: rgba(59, 130, 246, 0.15);
+            color: #60a5fa;
+            border: 1px solid rgba(59, 130, 246, 0.3);
+        }
+
+        .ucapan-text {
+            color: #e2e8f0;
+            line-height: 1.5;
+            max-width: 380px;
+        }
+
+        .date-text {
+            color: var(--text-secondary);
+            font-size: 12px;
+            white-space: nowrap;
+        }
+
+        .guest-name {
+            font-weight: 700;
+            color: #ffffff;
+        }
+
+        .action-btn {
+            background: none;
+            border: none;
+            color: var(--accent-red);
+            cursor: pointer;
+            font-size: 14px;
+            padding: 6px;
+            border-radius: 4px;
+            transition: background 0.2s;
+        }
+
+        .action-btn:hover {
+            background: rgba(239, 68, 68, 0.15);
+        }
+
+        .empty-state {
+            padding: 48px 20px;
+            text-align: center;
+            color: var(--text-secondary);
+        }
+
+        .empty-state i {
+            font-size: 40px;
+            margin-bottom: 12px;
+            color: var(--card-border);
+        }
+
+        @media (max-width: 768px) {
+            .header-title h1 {
+                font-size: 22px;
+            }
+            body {
+                padding: 16px 10px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <!-- Header -->
+        <div class="header">
+            <div class="header-title">
+                <h1>Data RSVP & Ucapan Tamu</h1>
+                <p>Pernikahan Yusup & Putri</p>
+            </div>
+            <div class="header-actions">
+                <a href="/" class="btn btn-outline">
+                    <i class="fa-solid fa-house"></i> Lihat Undangan
+                </a>
+                <a href="/admin.html" class="btn btn-gold">
+                    <i class="fa-brands fa-whatsapp"></i> Panel WA Admin
+                </a>
+            </div>
+        </div>
+
+        <!-- Stats Cards -->
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="stat-info">
+                    <span>Total Respon</span>
+                    <h2 id="statTotal">0</h2>
+                </div>
+                <div class="stat-icon icon-blue">
+                    <i class="fa-solid fa-paper-plane"></i>
+                </div>
+            </div>
+
+            <div class="stat-card">
+                <div class="stat-info">
+                    <span>Konfirmasi Hadir</span>
+                    <h2 id="statHadir">0</h2>
+                </div>
+                <div class="stat-icon icon-green">
+                    <i class="fa-solid fa-circle-check"></i>
+                </div>
+            </div>
+
+            <div class="stat-card">
+                <div class="stat-info">
+                    <span>Total Tamu Datang</span>
+                    <h2 id="statJumlahTamu">0</h2>
+                </div>
+                <div class="stat-icon icon-gold">
+                    <i class="fa-solid fa-users"></i>
+                </div>
+            </div>
+
+            <div class="stat-card">
+                <div class="stat-info">
+                    <span>Tidak Bisa Hadir</span>
+                    <h2 id="statAbsent">0</h2>
+                </div>
+                <div class="stat-icon icon-red">
+                    <i class="fa-solid fa-circle-xmark"></i>
+                </div>
+            </div>
+        </div>
+
+        <!-- Controls / Search Bar -->
+        <div class="controls-card">
+            <div class="search-box">
+                <i class="fa-solid fa-magnifying-glass"></i>
+                <input type="text" id="searchInput" class="search-input" placeholder="Cari nama tamu atau isi ucapan..." oninput="renderTable()">
+            </div>
+            <div class="filter-group">
+                <select id="filterStatus" class="select-filter" onchange="renderTable()">
+                    <option value="all">Semua Kehadiran</option>
+                    <option value="hadir">Hadir</option>
+                    <option value="absent">Tidak Hadir</option>
+                </select>
+                <button class="btn btn-outline" onclick="exportCSV()">
+                    <i class="fa-solid fa-file-csv"></i> Export CSV
+                </button>
+                <button class="btn btn-danger" onclick="clearAllData()">
+                    <i class="fa-solid fa-trash-can"></i> Hapus Data
+                </button>
+            </div>
+        </div>
+
+        <!-- Data Table -->
+        <div class="table-card">
+            <div class="table-responsive">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>No</th>
+                            <th>Tanggal & Waktu</th>
+                            <th>Nama Tamu</th>
+                            <th>No. WhatsApp</th>
+                            <th>Kehadiran</th>
+                            <th>Jumlah</th>
+                            <th>Ucapan & Doa Restu</th>
+                            <th>Aksi</th>
+                        </tr>
+                    </thead>
+                    <tbody id="dataTableBody">
+                        <!-- Data rows injected by JS -->
+                    </tbody>
+                </table>
+            </div>
+            <div id="emptyState" class="empty-state" style="display: none;">
+                <i class="fa-solid fa-inbox"></i>
+                <p>Belum ada data ucapan atau konfirmasi dari tamu.</p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const STORAGE_KEY = 'yusup_putri_ucapan_data';
+
+        const defaultData = [
+            { id: 1, nama: "Hjji", wa: "-", kehadiran: "Hadir", jumlah: 2, tanggal: "09 Agustus 2026 - 10:53", ucapan: "Tyuuui" },
+            { id: 2, nama: "Fistri", wa: "628123456789", kehadiran: "Hadir", jumlah: 2, tanggal: "28 Januari 2026 - 02:26", ucapan: "Semoga Allah / Tuhan memberkati pernikahan kalian dengan kebahagiaan, kesetiaan, dan kedamaian." },
+            { id: 3, nama: "Agi", wa: "628987654321", kehadiran: "Hadir", jumlah: 1, tanggal: "28 Januari 2026 - 02:25", ucapan: "Selamat menempuh hidup baru. Semoga rumah tangga kalian dipenuhi cinta, kebahagiaan, dan keberkahan." },
+            { id: 4, nama: "admin", wa: "-", kehadiran: "Hadir", jumlah: 1, tanggal: "28 Januari 2026 - 02:23", ucapan: "Selamat semoga bahagia" }
+        ];
+
+        function getData() {
+            let data = [];
+            try {
+                data = JSON.parse(localStorage.getItem(STORAGE_KEY));
+            } catch (e) {}
+
+            if (!data || !Array.isArray(data) || data.length === 0) {
+                data = defaultData;
+                localStorage.setItem(STORAGE_KEY, JSON.stringify(defaultData));
+            }
+            return data;
+        }
+
+        function renderTable() {
+            const data = getData();
+            const search = document.getElementById('searchInput').value.toLowerCase().trim();
+            const filter = document.getElementById('filterStatus').value;
+            const tbody = document.getElementById('dataTableBody');
+            const emptyState = document.getElementById('emptyState');
+
+            // Statistics calculation
+            let totalHadir = 0;
+            let totalAbsent = 0;
+            let totalJumlahTamu = 0;
+
+            data.forEach(item => {
+                const k = (item.kehadiran || '').toLowerCase();
+                if (k.includes('tidak') || k.includes('no') || k.includes('maaf')) {
+                    totalAbsent++;
+                } else {
+                    totalHadir++;
+                    totalJumlahTamu += (parseInt(item.jumlah) || 1);
+                }
+            });
+
+            document.getElementById('statTotal').innerText = data.length;
+            document.getElementById('statHadir').innerText = totalHadir;
+            document.getElementById('statJumlahTamu').innerText = totalJumlahTamu;
+            document.getElementById('statAbsent').innerText = totalAbsent;
+
+            // Filter data
+            const filtered = data.filter(item => {
+                const matchesSearch = (item.nama || '').toLowerCase().includes(search) || (item.ucapan || '').toLowerCase().includes(search);
+                const k = (item.kehadiran || '').toLowerCase();
+                const isAbsent = k.includes('tidak') || k.includes('no') || k.includes('maaf');
+
+                let matchesFilter = true;
+                if (filter === 'hadir') matchesFilter = !isAbsent;
+                if (filter === 'absent') matchesFilter = isAbsent;
+
+                return matchesSearch && matchesFilter;
+            });
+
+            if (filtered.length === 0) {
+                tbody.innerHTML = '';
+                emptyState.style.display = 'block';
+                return;
+            }
+
+            emptyState.style.display = 'none';
+            let html = '';
+            filtered.forEach((item, index) => {
+                const k = (item.kehadiran || 'Hadir').toLowerCase();
+                let badgeClass = 'badge-hadir';
+                let badgeIcon = '<i class="fa-solid fa-check"></i>';
+                let statusLabel = item.kehadiran || 'Hadir';
+
+                if (k.includes('tidak') || k.includes('no') || k.includes('maaf')) {
+                    badgeClass = 'badge-absent';
+                    badgeIcon = '<i class="fa-solid fa-xmark"></i>';
+                    statusLabel = 'Tidak Hadir';
+                }
+
+                html += `
+                    <tr>
+                        <td>${index + 1}</td>
+                        <td class="date-text">${item.tanggal || '-'}</td>
+                        <td class="guest-name">${escapeHtml(item.nama)}</td>
+                        <td>${escapeHtml(item.wa || '-')}</td>
+                        <td><span class="badge ${badgeClass}">${badgeIcon} ${statusLabel}</span></td>
+                        <td><strong>${item.jumlah || 1} orang</strong></td>
+                        <td class="ucapan-text">${escapeHtml(item.ucapan || '-')}</td>
+                        <td>
+                            <button class="action-btn" title="Hapus ucapan ini" onclick="deleteEntry(${item.id || index})">
+                                <i class="fa-solid fa-trash"></i>
+                            </button>
+                        </td>
+                    </tr>
+                `;
+            });
+
+            tbody.innerHTML = html;
+        }
+
+        function escapeHtml(str) {
+            return String(str || '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+        }
+
+        function deleteEntry(id) {
+            if (!confirm('Apakah Anda yakin ingin menghapus ucapan ini?')) return;
+            let data = getData();
+            data = data.filter((item, idx) => (item.id ? item.id !== id : idx !== id));
+            localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
+            renderTable();
+        }
+
+        function clearAllData() {
+            if (!confirm('Apakah Anda yakin ingin menghapus SELURUH data ucapan & RSVP? Tindakan ini tidak bisa dibatalkan!')) return;
+            localStorage.setItem(STORAGE_KEY, JSON.stringify([]));
+            renderTable();
+        }
+
+        function exportCSV() {
+            const data = getData();
+            if (data.length === 0) {
+                alert('Tidak ada data untuk diexport.');
+                return;
+            }
+
+            let csvContent = "data:text/csv;charset=utf-8,No,Tanggal,Nama Tamu,WhatsApp,Kehadiran,Jumlah Tamu,Ucapan\n";
+            data.forEach((item, idx) => {
+                const nama = `"${(item.nama || '').replace(/"/g, '""')}"`;
+                const wa = `"${(item.wa || '').replace(/"/g, '""')}"`;
+                const kehadiran = `"${(item.kehadiran || '').replace(/"/g, '""')}"`;
+                const jumlah = item.jumlah || 1;
+                const ucapan = `"${(item.ucapan || '').replace(/"/g, '""')}"`;
+                const tanggal = `"${(item.tanggal || '').replace(/"/g, '""')}"`;
+                csvContent += `${idx + 1},${tanggal},${nama},${wa},${kehadiran},${jumlah},${ucapan}\n`;
+            });
+
+            const encodedUri = encodeURI(csvContent);
+            const link = document.createElement("a");
+            link.setAttribute("href", encodedUri);
+            link.setAttribute("download", `Data_RSVP_Yusup_Putri_${Date.now()}.csv`);
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+        }
+
+        // Auto render on load
+        document.addEventListener('DOMContentLoaded', renderTable);
+    </script>
+</body>
+</html>

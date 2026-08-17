@@ -10529,12 +10529,22 @@ VERSI: PROFESSIONAL SAFE PREVIEW + FONT SIZE SLIDER
                                                 }
 
                                                 
+        
         formContainer.addEventListener('submit', function (e) {
             e.preventDefault();
             e.stopImmediatePropagation();
 
             const valUcapan = formContainer.querySelector('#form-field-ucapan')?.value || '';
             const valManualNama = formContainer.querySelector('#form-field-manual_nama')?.value || '';
+            const valManualWA = formContainer.querySelector('#form-field-manual_wa')?.value || '';
+            const valJumlahInput = formContainer.querySelector('#form-field-jumlah')?.value || '1';
+
+            // Kehadiran Radio
+            const selectedRadio = formContainer.querySelector('input[name="form_fields[kehadiran]"]:checked');
+            let valKehadiran = selectedRadio ? selectedRadio.value : 'Hadir';
+            if (!valKehadiran || valKehadiran.trim() === '') {
+                valKehadiran = 'Hadir';
+            }
 
             // Ambil Nama Tamu (dari input manual atau URL query string ?to=)
             const urlParams = new URLSearchParams(window.location.search);
@@ -10542,7 +10552,7 @@ VERSI: PROFESSIONAL SAFE PREVIEW + FONT SIZE SLIDER
             const namaFinal = valManualNama.trim() || urlName || 'Tamu Undangan';
 
             if (!valUcapan.trim() && !valManualNama.trim()) {
-                showCustomAlert('Silakan isi ucapan dan doa restu Anda.');
+                showCustomAlert('Silakan isi nama dan ucapan doa restu Anda.');
                 return;
             }
 
@@ -10553,7 +10563,7 @@ VERSI: PROFESSIONAL SAFE PREVIEW + FONT SIZE SLIDER
                 submitBtn.disabled = true;
             }
 
-            // Format tanggal & waktu saat ini
+            // Format tanggal & waktu
             const now = new Date();
             const months = ['Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni', 'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember'];
             const day = String(now.getDate()).padStart(2, '0');
@@ -10564,9 +10574,13 @@ VERSI: PROFESSIONAL SAFE PREVIEW + FONT SIZE SLIDER
             const dateFormatted = `${day} ${month} ${year} - ${hours}:${mins}`;
 
             const newEntry = {
+                id: Date.now(),
                 nama: namaFinal,
-                tanggal: dateFormatted,
-                ucapan: valUcapan.trim() || 'Selamat menempuh hidup baru untuk Yusup & Putri!'
+                wa: valManualWA.trim() || '-',
+                kehadiran: valKehadiran,
+                jumlah: parseInt(valJumlahInput) || 1,
+                ucapan: valUcapan.trim() || 'Selamat menempuh hidup baru untuk Yusup & Putri!',
+                tanggal: dateFormatted
             };
 
             // Simpan ke localStorage JSON
@@ -10585,11 +10599,52 @@ VERSI: PROFESSIONAL SAFE PREVIEW + FONT SIZE SLIDER
                     submitBtn.innerHTML = originalText;
                     submitBtn.disabled = false;
                 }
-                showCustomAlert('Terima kasih atas ucapan dan doa restunya!');
+                showCustomAlert('Terima kasih atas konfirmasi & ucapan doa restunya!');
                 formContainer.reset();
 
-                // Render ucapan baru langsung ke layar
+                // Render ucapan baru ke layar publik
                 renderUcapanList();
+            }, 300);
+        });
+    });
+
+    // FUNGSI RENDER LIST UCAPAN PUBLIK (HANYA NAMA & UCAPAN)
+    function renderUcapanList() {
+        const wadah = document.getElementById('wadah-semua-ucapan');
+        if (!wadah) return;
+
+        const STORAGE_KEY = 'yusup_putri_ucapan_data';
+        const defaultUcapan = [
+            { id: 1, nama: "Hjji", wa: "-", kehadiran: "Hadir", jumlah: 2, tanggal: "09 Agustus 2026 - 10:53", ucapan: "Tyuuui" },
+            { id: 2, nama: "Fistri", wa: "628123456789", kehadiran: "Hadir", jumlah: 2, tanggal: "28 Januari 2026 - 02:26", ucapan: "Semoga Allah / Tuhan memberkati pernikahan kalian dengan kebahagiaan, kesetiaan, dan kedamaian." },
+            { id: 3, nama: "Agi", wa: "628987654321", kehadiran: "Hadir", jumlah: 1, tanggal: "28 Januari 2026 - 02:25", ucapan: "Selamat menempuh hidup baru. Semoga rumah tangga kalian dipenuhi cinta, kebahagiaan, dan keberkahan." },
+            { id: 4, nama: "admin", wa: "-", kehadiran: "Hadir", jumlah: 1, tanggal: "28 Januari 2026 - 02:23", ucapan: "Selamat semoga bahagia" }
+        ];
+
+        let storedList = [];
+        try {
+            storedList = JSON.parse(localStorage.getItem(STORAGE_KEY));
+        } catch (e) {}
+
+        if (!storedList || !Array.isArray(storedList) || storedList.length === 0) {
+            storedList = defaultUcapan;
+            localStorage.setItem(STORAGE_KEY, JSON.stringify(defaultUcapan));
+        }
+
+        let html = '<div id="tempat-ucapan-baru"></div>';
+        storedList.forEach(item => {
+            html += `
+                <div class="ia-ucapan-item">
+                    <div class="ia-ucapan-name">${item.nama}</div>
+                    <div class="ia-ucapan-date">${item.tanggal}</div>
+                    <div class="ia-ucapan-text">${item.ucapan}</div>
+                </div>
+            `;
+        });
+
+        wadah.innerHTML = html;
+    }
+    
             }, 400);
         });
     });
