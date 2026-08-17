@@ -9461,43 +9461,7 @@ VERSI: PROFESSIONAL SAFE PREVIEW + FONT SIZE SLIDER
                             </div>
                         </div>
                     </div>
-                    <div class="has_eae_slider elementor-element elementor-element-7c6659bb e-con-full jedv-enabled--yes e-flex e-con e-child"
-                        data-eae-slider="41633" data-id="7c6659bb" data-element_type="container" data-e-type="container"
-                        id="live">
-                        <div class="elementor-element elementor-element-5d8fbbc3 animated-slow judul-dinamis warna-font elementor-invisible elementor-widget elementor-widget-heading"
-                            data-id="5d8fbbc3" data-element_type="widget" data-e-type="widget"
-                            data-settings="{&quot;_animation&quot;:&quot;fadeInUp&quot;}"
-                            data-widget_type="heading.default">
-                            <div class="elementor-widget-container">
-                                <h2 class="elementor-heading-title elementor-size-default">Live Streaming</h2>
-                            </div>
-                        </div>
-                        <div class="elementor-element elementor-element-405f0fd animated-slow body-dinamis warna-font elementor-invisible elementor-widget elementor-widget-text-editor"
-                            data-id="405f0fd" data-element_type="widget" data-e-type="widget"
-                            data-settings="{&quot;_animation&quot;:&quot;fadeInRight&quot;}"
-                            data-widget_type="text-editor.default">
-                            <div class="elementor-widget-container">
-                                <p>For family and friends who would like to send a gift. We would be glad to receive it.
-                                    Tap the following buttons to send them to us:</p>
-                            </div>
-                        </div>
-                        <div class="elementor-element elementor-element-4e150590 elementor-align-center elementor-mobile-align-center jedv-enabled--yes elementor-tablet-align-center animated-slow elementor-widget__width-inherit body-dinamis warna-4 elementor-invisible elementor-widget elementor-widget-button"
-                            data-id="4e150590" data-element_type="widget" data-e-type="widget"
-                            data-settings="{&quot;_animation&quot;:&quot;fadeInUp&quot;}"
-                            data-widget_type="button.default">
-                            <div class="elementor-widget-container">
-                                <div class="elementor-button-wrapper">
-                                    <a class="elementor-button elementor-button-link elementor-size-sm"
-                                        href="https://www.youtube.com/watch?v=X-EK60rmcQs&list=RDX-EK60rmcQs&start_radio=1">
-                                        <span class="elementor-button-content-wrapper">
-                                            <span class="elementor-button-icon">
-                                                <i aria-hidden="true" class="fas fa-arrow-right"></i> </span>
-                                            <span class="elementor-button-text">Live Streaming</span>
-                                        </span>
-                                    </a>
-                                </div>
-                            </div>
-                        </div>
+                    
                     </div>
                 </div>
                 <div class="has_eae_slider elementor-element elementor-element-350830ad e-con-full jedv-enabled--yes warna-bg-2 e-flex e-con e-child"
@@ -10564,449 +10528,112 @@ VERSI: PROFESSIONAL SAFE PREVIEW + FONT SIZE SLIDER
                                                     }, 4000);
                                                 }
 
-                                                formContainer.addEventListener('submit', function (e) {
-                                                    e.preventDefault();
-                                                    e.stopImmediatePropagation();
+                                                
+        formContainer.addEventListener('submit', function (e) {
+            e.preventDefault();
+            e.stopImmediatePropagation();
 
-                                                    // 1. Cek Session Grup (Mencegah submit berulang tanpa reload)
-                                                    if (sessionAlreadySubmitted) {
-                                                        showCustomAlert('Confirmation recorded. Please reload the page if you need to submit data for someone else.');
-                                                        return;
-                                                    }
+            const valUcapan = formContainer.querySelector('#form-field-ucapan')?.value || '';
+            const valManualNama = formContainer.querySelector('#form-field-manual_nama')?.value || '';
 
-                                                    let valKehadiran = '';
-                                                    let valJumlah = 1;
-                                                    let valAcara = '';
-                                                    let forceZero = false;
+            // Ambil Nama Tamu (dari input manual atau URL query string ?to=)
+            const urlParams = new URLSearchParams(window.location.search);
+            const urlName = urlParams.get('to') || urlParams.get('n');
+            const namaFinal = valManualNama.trim() || urlName || 'Tamu Undangan';
 
-                                                    const valUcapan = formContainer.querySelector('#form-field-ucapan')?.value || '';
-                                                    const valManualNama = formContainer.querySelector('#form-field-manual_nama')?.value || '';
-                                                    const valManualWA = formContainer.querySelector('#form-field-manual_wa')?.value || '';
-                                                    const valCustom1 = formContainer.querySelector('#form-field-custom1')?.value || '';
+            if (!valUcapan.trim() && !valManualNama.trim()) {
+                showCustomAlert('Silakan isi ucapan dan doa restu Anda.');
+                return;
+            }
 
-                                                    if (isPublicMode) {
-                                                        // Validasi khusus Mode Publik
-                                                        if (!valManualNama.trim()) {
-                                                            showCustomAlert('Please enter your name.');
-                                                            return;
-                                                        }
-                                                        valKehadiran = 'Public Wish';
-                                                        valJumlah = 0;
+            const submitBtn = formContainer.querySelector('button[type="submit"]');
+            const originalText = submitBtn ? submitBtn.innerHTML : 'Kirim';
+            if (submitBtn) {
+                submitBtn.innerHTML = 'SENDING...';
+                submitBtn.disabled = true;
+            }
 
-                                                    } else {
-                                                        // Validasi khusus Mode Normal
-                                                        if (tipeTamu === 'personal' && isAlreadyRsvp) {
-                                                            showCustomAlert('Our records indicate that you have already confirmed your attendance. If you wish to make changes, please contact the host. Thank you.');
-                                                            return;
-                                                        }
+            // Format tanggal & waktu saat ini
+            const now = new Date();
+            const months = ['Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni', 'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember'];
+            const day = String(now.getDate()).padStart(2, '0');
+            const month = months[now.getMonth()];
+            const year = now.getFullYear();
+            const hours = String(now.getHours()).padStart(2, '0');
+            const mins = String(now.getMinutes()).padStart(2, '0');
+            const dateFormatted = `${day} ${month} ${year} - ${hours}:${mins}`;
 
-                                                        const selectedRadio = formContainer.querySelector('input[name="form_fields[kehadiran]"]:checked');
-                                                        valKehadiran = selectedRadio ? selectedRadio.value : '';
+            const newEntry = {
+                nama: namaFinal,
+                tanggal: dateFormatted,
+                ucapan: valUcapan.trim() || 'Selamat menempuh hidup baru untuk Yusup & Putri!'
+            };
 
-                                                        if (valKehadiran && (valKehadiran.toLowerCase().includes('tidak') || valKehadiran.toLowerCase().includes('no') || valKehadiran.toLowerCase().includes('maaf') || valKehadiran.toLowerCase().includes('not'))) forceZero = true;
+            // Simpan ke localStorage JSON
+            const STORAGE_KEY = 'yusup_putri_ucapan_data';
+            let storedList = [];
+            try {
+                storedList = JSON.parse(localStorage.getItem(STORAGE_KEY)) || [];
+            } catch (err) {
+                storedList = [];
+            }
+            storedList.unshift(newEntry);
+            localStorage.setItem(STORAGE_KEY, JSON.stringify(storedList));
 
-                                                        if (!forceZero && sisaKuota <= 0) {
-                                                            showCustomAlert('We apologize, but the attendance quota is currently full. Please contact the host if additional quota is needed. Thank you for your understanding.');
-                                                            return;
-                                                        }
+            setTimeout(() => {
+                if (submitBtn) {
+                    submitBtn.innerHTML = originalText;
+                    submitBtn.disabled = false;
+                }
+                showCustomAlert('Terima kasih atas ucapan dan doa restunya!');
+                formContainer.reset();
 
-                                                        const customDropdownJumlah = formContainer.querySelector('#custom-jumlah-dropdown');
-                                                        if (customDropdownJumlah) {
-                                                            valJumlah = customDropdownJumlah.value;
-                                                        } else if (inputJumlah && inputJumlah.value) {
-                                                            valJumlah = inputJumlah.value;
-                                                        }
+                // Render ucapan baru langsung ke layar
+                renderUcapanList();
+            }, 400);
+        });
+    });
 
-                                                        if (forceZero) valJumlah = 0;
+    // FUNGSI RENDER LIST UCAPAN DARI LOCALSTORAGE
+    function renderUcapanList() {
+        const wadah = document.getElementById('wadah-semua-ucapan');
+        if (!wadah) return;
 
-                                                        if (!forceZero) {
-                                                            const customDropdownAcara = formContainer.querySelector('#custom-acara-dropdown');
-                                                            if (customDropdownAcara) {
-                                                                valAcara = customDropdownAcara.value;
-                                                            } else {
-                                                                const checkboxAcara = formContainer.querySelectorAll('input[name="form_fields[acara][]"]:checked');
-                                                                if (checkboxAcara.length > 0) valAcara = Array.from(checkboxAcara).map(cb => cb.value).join(',');
-                                                            }
-                                                        }
-                                                    }
+        const STORAGE_KEY = 'yusup_putri_ucapan_data';
+        const defaultUcapan = [
+            { nama: "Hjji", tanggal: "09 Agustus 2026 - 10:53", ucapan: "Tyuuui" },
+            { nama: "Fistri", tanggal: "28 Januari 2026 - 02:26", ucapan: "Semoga Allah / Tuhan memberkati pernikahan kalian dengan kebahagiaan, kesetiaan, dan kedamaian." },
+            { nama: "Agi", tanggal: "28 Januari 2026 - 02:25", ucapan: "Selamat menempuh hidup baru. Semoga rumah tangga kalian dipenuhi cinta, kebahagiaan, dan keberkahan." },
+            { nama: "admin", tanggal: "28 Januari 2026 - 02:23", ucapan: "Selamat semoga bahagia" }
+        ];
 
-                                                    const submitBtn = formContainer.querySelector('button[type="submit"]');
-                                                    const originalText = submitBtn.innerHTML;
-                                                    submitBtn.innerHTML = 'SENDING...';
-                                                    submitBtn.disabled = true;
+        let storedList = [];
+        try {
+            storedList = JSON.parse(localStorage.getItem(STORAGE_KEY));
+        } catch (e) {}
 
-                                                    const formData = new URLSearchParams();
-                                                    formData.append('action', 'submit_rsvp_secure');
-                                                    formData.append('code_id', guestCode);
-                                                    formData.append('post_id', '281652');
-                                                    formData.append('kehadiran', valKehadiran);
-                                                    formData.append('jumlah', valJumlah);
-                                                    formData.append('ucapan', valUcapan);
-                                                    formData.append('manual_nama', valManualNama);
-                                                    formData.append('manual_wa', valManualWA);
-                                                    formData.append('acara', valAcara);
-                                                    formData.append('custom_1', valCustom1);
+        if (!storedList || !Array.isArray(storedList) || storedList.length === 0) {
+            storedList = defaultUcapan;
+            localStorage.setItem(STORAGE_KEY, JSON.stringify(defaultUcapan));
+        }
 
-                                                    fetch('https://invitingart.id/wp-admin/admin-ajax.php', {
-                                                        method: 'POST',
-                                                        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-                                                        body: formData.toString()
-                                                    })
-                                                        .then(res => res.json())
-                                                        .then(response => {
-                                                            submitBtn.innerHTML = originalText;
-                                                            submitBtn.disabled = false;
-
-                                                            if (response.success) {
-                                                                sessionAlreadySubmitted = true;
-
-                                                                if (isPublicMode) {
-                                                                    showCustomAlert('Thank you for your warm wishes and blessings!');
-                                                                } else if (forceZero) {
-                                                                    showCustomAlert('Thank you for your confirmation. We understand your absence and kindly ask for your blessings for our event. We hope to see you on another occasion.');
-                                                                } else {
-                                                                    showCustomAlert('Thank you for confirming your attendance. We are looking forward to your presence on our special day. See you at the event.');
-                                                                }
-
-                                                                formContainer.reset();
-
-                                                                if (!isPublicMode) {
-                                                                    const kehadiranRadios = formContainer.querySelectorAll('input[name="form_fields[kehadiran]"]');
-                                                                    let reChecked = false;
-                                                                    for (let i = 0; i < kehadiranRadios.length; i++) {
-                                                                        let val = kehadiranRadios[i].value.toLowerCase();
-                                                                        if (!val.includes('tidak') && !val.includes('no') && !val.includes('maaf') && !val.includes('not')) {
-                                                                            kehadiranRadios[i].checked = true; reChecked = true; break;
-                                                                        }
-                                                                    }
-                                                                    if (!reChecked && kehadiranRadios.length > 0) kehadiranRadios[0].checked = true;
-
-                                                                    const customDropdownJumlah = formContainer.querySelector('#custom-jumlah-dropdown');
-                                                                    if (customDropdownJumlah) customDropdownJumlah.value = "1";
-                                                                    if (inputJumlah) inputJumlah.value = "1";
-                                                                }
-
-                                                                toggleVisibility();
-
-                                                                // RENDER KOMENTAR KE LAYAR
-                                                                const wadahKomentar = document.getElementById('tempat-ucapan-baru');
-                                                                const teksKosong = document.getElementById('teks-kosong');
-                                                                if (wadahKomentar && response.data.html && response.data.html.trim() !== '') {
-                                                                    if (teksKosong) teksKosong.style.display = 'none';
-                                                                    wadahKomentar.insertAdjacentHTML('afterbegin', response.data.html);
-
-                                                                    const komentarBaru = document.querySelector('.real-time-new');
-                                                                    if (komentarBaru) {
-                                                                        setTimeout(() => {
-                                                                            komentarBaru.style.display = 'block';
-                                                                            komentarBaru.classList.remove('real-time-new');
-                                                                        }, 50);
-                                                                    }
-                                                                }
-
-                                                            } else {
-                                                                let errData = response.data;
-                                                                if (errData && errData.is_duplicate) {
-                                                                    showCustomAlert(errData.message);
-                                                                } else {
-                                                                    showCustomAlert(typeof errData === 'string' ? errData : 'A system error occurred.');
-                                                                }
-                                                            }
-                                                        })
-                                                        .catch(err => {
-                                                            submitBtn.innerHTML = originalText;
-                                                            submitBtn.disabled = false;
-                                                            showCustomAlert('A network error occurred, please check your internet connection.');
-                                                        });
-                                                }, true);
-                                            }
-                                        });
-                                    </script>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="elementor-element elementor-element-1889ebc6 elementor-widget__width-inherit body-dinamis elementor-widget elementor-widget-shortcode"
-                            data-id="1889ebc6" data-element_type="widget" data-e-type="widget"
-                            data-widget_type="shortcode.default">
-                            <div class="elementor-widget-container">
-                                <div class="elementor-shortcode">
-                                    <div id="wadah-semua-ucapan" class="ia-ucapan-wrapper">
-                                        <div id="tempat-ucapan-baru"></div>
-
-                                        <div class="ia-ucapan-item">
-                                            <div class="ia-ucapan-name">Hjji</div>
-                                            <div class="ia-ucapan-date">09 Agustus 2026 - 10:53</div>
-                                            <div class="ia-ucapan-text">Tyuuui</div>
-                                        </div>
-                                        <div class="ia-ucapan-item">
-                                            <div class="ia-ucapan-name">Fistri</div>
-                                            <div class="ia-ucapan-date">28 Januari 2026 - 02:26</div>
-                                            <div class="ia-ucapan-text">Semoga Allah / Tuhan memberkati pernikahan
-                                                kalian dengan kebahagiaan, kesetiaan, dan kedamaian.</div>
-                                        </div>
-                                        <div class="ia-ucapan-item">
-                                            <div class="ia-ucapan-name">Agi</div>
-                                            <div class="ia-ucapan-date">28 Januari 2026 - 02:25</div>
-                                            <div class="ia-ucapan-text">Selamat menempuh hidup baru. Semoga rumah tangga
-                                                kalian dipenuhi cinta, kebahagiaan, dan keberkahan.</div>
-                                        </div>
-                                        <div class="ia-ucapan-item">
-                                            <div class="ia-ucapan-name">admin</div>
-                                            <div class="ia-ucapan-date">28 Januari 2026 - 02:23</div>
-                                            <div class="ia-ucapan-text">Selamat semoga bahagia</div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="elementor-element elementor-element-4f9d0ac7 elementor-widget elementor-widget-html"
-                            data-id="4f9d0ac7" data-element_type="widget" data-e-type="widget"
-                            data-widget_type="html.default">
-                            <div class="elementor-widget-container">
-
-
-                                <style>
-                                    /* ==========================================
-   UCAPAN / GUESTBOOK STYLE
-   Mengikuti Sistem Warna & Font Dinamis PHP
-   Font Dinamis: body-dinamis
-   Font Tanggal: Tidak Dynamic
-   Fallback Font: Cormorant Garamond
-   Tanpa JetEngine Shortcode
-   ========================================== */
-
-                                    /* Container Utama */
-                                    .ia-ucapan-wrapper {
-                                        /* Background box ucapan */
-                                        --warna-bg-klien: var(--none, transparent);
-
-                                        /* Warna teks utama */
-                                        --warna-teks-klien: var(--ia-warna-font, #E2E0B7);
-
-                                        /* Warna border / scrollbar */
-                                        --warna-border-klien: var(--ia-warna-font, rgba(234, 234, 234, 0.2));
-
-                                        /* Warna accent tambahan */
-                                        --warna-accent-klien: var(--ia-warna-4, #ffffff);
-
-                                        max-height: 500px;
-                                        overflow-y: auto;
-                                        padding-right: 10px;
-
-                                        /*
-       Fallback font.
-       Jika client memilih font, class body-dinamis dari PHP akan menimpa ini.
-       Jika client tidak memilih font, Cormorant Garamond tetap dipakai.
-    */
-                                        font-family: "Cormorant Garamond", serif;
-                                    }
-
-                                    /* 
-   PENTING:
-   Jangan gunakan selector ini:
-   .body-dinamis .ia-ucapan-wrapper { font-family: inherit; }
-
-   Karena kalau client belum memilih font,
-   wrapper bisa mewarisi font bawaan Elementor/theme,
-   sehingga fallback Cormorant Garamond tidak berjalan.
-*/
-
-                                    /* Pesan Loading dan Kosong */
-                                    .ia-ucapan-loading,
-                                    .ia-ucapan-empty {
-                                        text-align: center;
-                                        color: var(--warna-teks-klien, #E2E0B7);
-                                        opacity: 0.7;
-                                        font-size: 13px;
-                                        font-family: inherit;
-                                    }
-
-                                    /* Kotak Setiap Ucapan */
-                                    .ia-ucapan-item {
-                                        background: var(--warna-bg-klien, transparent);
-                                        border: none;
-                                        padding: 15px;
-                                        border-radius: inherit;
-                                        margin-bottom: 15px;
-                                        box-shadow: none;
-                                        font-family: inherit;
-                                    }
-
-                                    /* Nama Tamu */
-                                    .ia-ucapan-name {
-                                        font-weight: 500;
-                                        color: var(--warna-teks-klien, #E2E0B7);
-                                        font-size: 15px;
-                                        margin-bottom: 4px;
-                                        font-family: inherit;
-                                    }
-
-                                    /* Tanggal Ucapan */
-                                    /* Font tanggal tidak dynamic */
-                                    .ia-ucapan-date {
-                                        font-size: 11px;
-                                        color: var(--warna-teks-klien, #E2E0B7);
-                                        opacity: 0.8;
-                                        margin-bottom: 8px;
-
-                                        /* Tanggal selalu fallback Cormorant Garamond */
-                                        font-family: "Cormorant Garamond", serif !important;
-                                    }
-
-                                    /* Isi Ucapan */
-                                    .ia-ucapan-text {
-                                        font-size: 13px;
-                                        color: var(--warna-teks-klien, #E2E0B7);
-                                        line-height: 1.5;
-                                        font-family: inherit;
-                                    }
-
-                                    /* Scrollbar */
-                                    .ia-ucapan-wrapper::-webkit-scrollbar {
-                                        width: 4px;
-                                    }
-
-                                    .ia-ucapan-wrapper::-webkit-scrollbar-track {
-                                        background: transparent;
-                                    }
-
-                                    .ia-ucapan-wrapper::-webkit-scrollbar-thumb {
-                                        background: var(--warna-border-klien, rgba(234, 234, 234, 0.2));
-                                        border-radius: 20px;
-                                    }
-                                </style>
-                            </div>
-                        </div>
-                    </div>
+        let html = '<div id="tempat-ucapan-baru"></div>';
+        storedList.forEach(item => {
+            html += `
+                <div class="ia-ucapan-item">
+                    <div class="ia-ucapan-name">${item.nama}</div>
+                    <div class="ia-ucapan-date">${item.tanggal}</div>
+                    <div class="ia-ucapan-text">${item.ucapan}</div>
                 </div>
-                <div class="has_eae_slider elementor-element elementor-element-1dc4934f e-con-full jedv-enabled--yes e-flex e-con e-child"
-                    data-eae-slider="44238" data-id="1dc4934f" data-element_type="container" data-e-type="container"
-                    id="gift" data-settings="{&quot;background_background&quot;:&quot;classic&quot;}">
-                    <div class="has_eae_slider elementor-element elementor-element-1d079de1 e-con-full warna-4 e-flex elementor-invisible e-con e-child"
-                        data-eae-slider="67132" data-id="1d079de1" data-element_type="container" data-e-type="container"
-                        data-settings="{&quot;background_background&quot;:&quot;classic&quot;,&quot;animation&quot;:&quot;fadeInUp&quot;}">
-                        <div class="elementor-element elementor-element-1c7ffbaf animated-slow judul-dinamis warna-font elementor-invisible elementor-widget elementor-widget-heading"
-                            data-id="1c7ffbaf" data-element_type="widget" data-e-type="widget"
-                            data-settings="{&quot;_animation&quot;:&quot;fadeInLeft&quot;}"
-                            data-widget_type="heading.default">
-                            <div class="elementor-widget-container">
-                                <h2 class="elementor-heading-title elementor-size-default">Wedding Gift</h2>
-                            </div>
-                        </div>
-                        <div class="elementor-element elementor-element-35bcf768 animated-slow body-dinamis warna-font elementor-invisible elementor-widget elementor-widget-text-editor"
-                            data-id="35bcf768" data-element_type="widget" data-e-type="widget"
-                            data-settings="{&quot;_animation&quot;:&quot;fadeInRight&quot;}"
-                            data-widget_type="text-editor.default">
-                            <div class="elementor-widget-container">
-                                <p>Bagi keluarga dan sahabat yang ingin mengirimkan hadiah, kami akan menerimanya dengan
-                                    penuh sukacita. Silakan ketuk tombol berikut untuk mengirimkannya kepada kami.
-                                </p>
-                            </div>
-                        </div>
-                        <div class="has_eae_slider elementor-element elementor-element-73edd655 e-con-full tampilan-1 e-flex e-con e-child"
-                            data-eae-slider="54092" data-id="73edd655" data-element_type="container"
-                            data-e-type="container">
-                            <div class="has_eae_slider elementor-element elementor-element-1701ec20 e-con-full border-warna-font jedv-enabled--yes e-flex e-con e-child"
-                                data-eae-slider="22009" data-id="1701ec20" data-element_type="container"
-                                data-e-type="container">
-                                <div class="has_eae_slider elementor-element elementor-element-75ec6a2f e-con-full e-flex e-con e-child"
-                                    data-eae-slider="47354" data-id="75ec6a2f" data-element_type="container"
-                                    data-e-type="container">
-                                    <div class="elementor-element elementor-element-552db6a7 body-dinamis warna-font elementor-widget elementor-widget-heading"
-                                        data-id="552db6a7" data-element_type="widget" data-e-type="widget"
-                                        data-widget_type="heading.default">
-                                        <div class="elementor-widget-container">
-                                            <h2 class="elementor-heading-title elementor-size-default">Bank BCA</h2>
-                                        </div>
-                                    </div>
-                                    <div class="elementor-element elementor-element-5626d5de body-dinamis warna-font elementor-widget elementor-widget-heading"
-                                        data-id="5626d5de" data-element_type="widget" data-e-type="widget"
-                                        data-widget_type="heading.default">
-                                        <div class="elementor-widget-container">
-                                            <h2 class="elementor-heading-title elementor-size-default">Putri Syara
-                                                Yunizar</h2>
-                                        </div>
-                                    </div>
-                                    <div class="elementor-element elementor-element-2a1cd353 body-dinamis warna-font elementor-widget elementor-widget-heading"
-                                        data-id="2a1cd353" data-element_type="widget" data-e-type="widget"
-                                        data-widget_type="heading.default">
-                                        <div class="elementor-widget-container">
-                                            <h2 class="elementor-heading-title elementor-size-default">4372507881</h2>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="has_eae_slider elementor-element elementor-element-67ca90e5 e-con-full e-flex e-con e-child"
-                                    data-eae-slider="75803" data-id="67ca90e5" data-element_type="container"
-                                    data-e-type="container">
-                                    <div class="elementor-element elementor-element-44d6c001 copy-1 warna-4 elementor-widget elementor-widget-button"
-                                        data-id="44d6c001" data-element_type="widget" data-e-type="widget"
-                                        data-widget_type="button.default">
-                                        <div class="elementor-widget-container">
-                                            <div class="elementor-button-wrapper">
-                                                <a class="elementor-button elementor-size-sm" role="button">
-                                                    <span class="elementor-button-content-wrapper">
-                                                        <span class="elementor-button-icon">
-                                                            <i aria-hidden="true" class="far fa-copy"></i> </span>
-                                                    </span>
-                                                </a>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="elementor-element elementor-element-754f5a20 elementor-widget elementor-widget-html"
-                                data-id="754f5a20" data-element_type="widget" data-e-type="widget"
-                                data-widget_type="html.default">
-                                <div class="elementor-widget-container">
-                                    <script>
-                                        document.addEventListener('DOMContentLoaded', function () {
+            `;
+        });
 
-                                            // 1. Membuat daftar (array) berisi target class dan data yang ingin disalin
-                                            const copyItems = [
-                                                {
-                                                    selector: '.copy-1',
-                                                    textToCopy: '4372507881'
-                                                }
-                                            ];
+        wadah.innerHTML = html;
+    }
 
-                                            // 2. Menjalankan fungsi untuk setiap tombol di dalam daftar
-                                            copyItems.forEach(item => {
-                                                const copyBtnContainer = document.querySelector(item.selector);
-
-                                                if (copyBtnContainer) {
-                                                    // Menargetkan tag <a> di dalam widget tombol Elementor
-                                                    const copyBtn = copyBtnContainer.querySelector('a') || copyBtnContainer;
-
-                                                    copyBtn.addEventListener('click', function (e) {
-                                                        e.preventDefault(); // Mencegah layar lompat ke atas
-
-                                                        // Proses menyalin teks
-                                                        navigator.clipboard.writeText(item.textToCopy).then(() => {
-
-                                                            // Memberikan efek visual berubah menjadi 'Tersalin!'
-                                                            const btnText = copyBtn.querySelector('.elementor-button-text');
-                                                            if (btnText) {
-                                                                const originalText = btnText.innerText;
-                                                                btnText.innerText = 'Tersalin!'; // Ubah teks sementara
-
-                                                                // Kembalikan ke teks semula setelah 2 detik
-                                                                setTimeout(() => {
-                                                                    btnText.innerText = originalText;
-                                                                }, 2000);
-                                                            } else {
-                                                                // Jika bukan widget tombol bawaan Elementor
-                                                                alert('Berhasil disalin!');
-                                                            }
-
-                                                        }).catch(err => {
-                                                            console.error('Gagal menyalin teks: ', err);
-                                                            alert('Gagal menyalin. Silakan coba lagi.');
-                                                        });
-                                                    });
-                                                }
-                                            });
-                                        });
-                                    </script>
+    document.addEventListener('DOMContentLoaded', renderUcapanList);
+</script>
+    
                                 </div>
                             </div>
                         </div>
@@ -12059,15 +11686,7 @@ VERSI: PROFESSIONAL SAFE PREVIEW + FONT SIZE SLIDER
                                                 href="#gallery">Gallery</a></h2>
                                     </div>
                                 </div>
-                                <div class="elementor-element elementor-element-606184b7 animated-slow jedv-enabled--yes elementor-invisible elementor-widget elementor-widget-heading"
-                                    data-id="606184b7" data-element_type="widget" data-e-type="widget" id="btn-close"
-                                    data-settings="{&quot;_animation&quot;:&quot;fadeInUp&quot;}"
-                                    data-widget_type="heading.default">
-                                    <div class="elementor-widget-container">
-                                        <h2 class="elementor-heading-title elementor-size-default"><a href="#live">Live
-                                                Streaming</a></h2>
-                                    </div>
-                                </div>
+                                
                                 <div class="elementor-element elementor-element-6dc2e7ff animated-slow jedv-enabled--yes elementor-invisible elementor-widget elementor-widget-heading"
                                     data-id="6dc2e7ff" data-element_type="widget" data-e-type="widget" id="btn-close"
                                     data-settings="{&quot;_animation&quot;:&quot;fadeInUp&quot;}"
