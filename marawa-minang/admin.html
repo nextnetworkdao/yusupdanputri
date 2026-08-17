@@ -171,9 +171,8 @@
                 return custom.endsWith('/') ? custom : custom + '/';
             }
             let href = window.location.href.split('?')[0].split('#')[0];
-            if (href.endsWith('admin.html')) {
-                href = href.replace(/admin\.html$/, '');
-            } else if (!href.endsWith('/')) {
+            href = href.replace(/\/admin(\.html)?\/?$/i, '/');
+            if (!href.endsWith('/')) {
                 href = href + '/';
             }
             return href;
